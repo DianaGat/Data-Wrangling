@@ -1,8 +1,0 @@
-"0","# Sometimes some jittering (in Finnish: täristää) is needed."
-"0","ggplot(data6, aes(x = ppltrst, y = img_avg)) +"
-"0","  geom_point(position = ""jitter"")"
-"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
-"
-"2","Warning:"
-"2"," Removed 7 rows containing missing values (geom_point).
-"

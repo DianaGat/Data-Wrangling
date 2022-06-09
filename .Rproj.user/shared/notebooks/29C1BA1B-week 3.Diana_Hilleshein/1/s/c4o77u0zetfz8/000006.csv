@@ -1,6 +1,0 @@
-"0",""
-"0","#plotting"
-"0","library(ggplot2)"
-"0","ggplot(a2, aes(x = cntry, y = mean_stflife, fill = factor(gndr))) +"
-"0","  geom_bar(stat=""identity"", position=position_dodge()) + scale_fill_manual(values = c(""1"" = ""#6666CC"","
-"0","  ""2"" = ""#CC6699"")) + xlab(""countries"") +  ylab(""mean life satisfaction"") + ggtitle(""Plot 1. Mean staisfaction with life among differnet countries"")"

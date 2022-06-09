@@ -1,6 +1,0 @@
-"0","#load the data for part 2 ex"
-"0","library(readxl)"
-"0","part2_data <- read_excel(""C:/R scripts/DWA2022/part_two_data.xlsx"")"
-"0",""
-"0","View(part2_data)"
-"0","save(part2_data,file=""part2_data.csv"")"

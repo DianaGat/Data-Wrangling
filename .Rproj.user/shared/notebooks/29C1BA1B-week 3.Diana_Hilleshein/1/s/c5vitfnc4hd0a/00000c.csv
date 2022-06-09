@@ -1,1 +1,0 @@
-"0","a5[which(a5$mean_stflife == min(a5$mean_stflife)), ] #this code gave NA in age, so I need to check if there are missing values. Nevertheless, there is a person from Bulgaria of unknown age who feels very unsatisfied with life ):"

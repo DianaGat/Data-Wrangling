@@ -1,6 +1,0 @@
-"0","setwd(""C:/R scripts/DWA2022"")"
-"0","data <- read.table(""C:/R scripts/DWA2022/ESS9e03_1.csv"", header=T, sep = ';')"
-"0",""
-"0","View(data)"
-"0",""
-"0","save(data,file=""data.Rda"")"

@@ -1,3 +1,0 @@
-"0","# qqplot "
-"0","library(ggpubr)"
-"0","ggqqplot(data5$img_sum)"

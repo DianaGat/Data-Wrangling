@@ -1,4 +1,0 @@
-"0","# Test Normality of Residuals"
-"0","# H0: residuals are normally distributed"
-"0",""
-"0","hist(lm3$residuals)"

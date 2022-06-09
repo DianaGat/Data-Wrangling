@@ -1,2 +1,0 @@
-"0","library(ggpubr)"
-"0","ggdensity(data$img_sum,  na.rm = T) "

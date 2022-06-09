@@ -1,9 +1,0 @@
-"0","col2 = rep(""dark orange"", alpha = 0.7)"
-"0",""
-"0","ggplot(data = data, aes(agea, y = "" "")) + geom_boxplot(fill = ""dark orange"", alpha = 0.7)"
-"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
-"
-"2","Warning:"
-"2"," Removed 222 rows containing
-non-finite values (stat_boxplot).
-"

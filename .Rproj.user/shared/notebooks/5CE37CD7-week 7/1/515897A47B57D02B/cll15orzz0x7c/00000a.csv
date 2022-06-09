@@ -1,5 +1,0 @@
-"0","data7 %>% group_by(cntry) %>% shapiro_test(img_sum)
-"
-"2","Error in shapiro_test(., img_sum) : 
-  could not find function ""shapiro_test""
-"

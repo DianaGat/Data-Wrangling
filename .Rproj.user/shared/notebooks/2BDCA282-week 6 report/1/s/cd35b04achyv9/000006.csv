@@ -1,5 +1,0 @@
-"0","# a plot"
-"0","library(corrplot)"
-"2","corrplot 0.92 loaded
-"
-"0","corrplot(corrmatrix)"

@@ -1,3 +1,0 @@
-"0",""
-"0","ggplot(a1, aes(x = cntry, y = mean_sum, fill = ""dark orange"", alpha = 0.8)) +"
-"0","  geom_bar(stat=""identity"", position=position_dodge()) + ylab (""mean attitude to immigrants"") + xlab(""country"")"

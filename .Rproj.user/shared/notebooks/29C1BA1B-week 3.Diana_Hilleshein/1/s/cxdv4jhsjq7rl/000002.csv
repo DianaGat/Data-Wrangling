@@ -1,4 +1,0 @@
-"0","#create two sets"
-"0","set1 <- select(data, idno, cntry, gndr)"
-"0","set2 <- select(data, idno, cntry, stflife)"
-"0","head(set1) #all good"

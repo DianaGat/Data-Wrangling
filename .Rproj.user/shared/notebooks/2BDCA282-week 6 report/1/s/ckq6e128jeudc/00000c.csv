@@ -1,4 +1,0 @@
-"0","# some figures and plots"
-"0","data6 %>% group_by(age3cat)  %>% "
-"0","  summarise(n = n(), mean_img_avg = mean(img_avg, na.rm = TRUE),"
-"0","            sd_img_avg = sd(img_avg, na.rm = TRUE))"

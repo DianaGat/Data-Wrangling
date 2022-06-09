@@ -1,7 +1,0 @@
-"0","#install.packages(""VIM"")"
-"0","library(VIM) "
-"0",""
-"0","missing_img <- select(data, imwbcnt, imbgeco, imueclt)"
-"0",""
-"0","# visualize missingness "
-"0","missing <- aggr(missing_img, prop = F, numbers = T)"

@@ -1,3 +1,0 @@
-"0","mosaicplot(t1, shade = TRUE, las=2,"
-"0","           main =""gender and attitude to immigrants, t1"", xlab =""attitude to immigrants, 1 = allow many, 4 = allow none"", ylab=""gender, 1 = male, 2 = female"","
-"0","            label = T, show.margins = T)"

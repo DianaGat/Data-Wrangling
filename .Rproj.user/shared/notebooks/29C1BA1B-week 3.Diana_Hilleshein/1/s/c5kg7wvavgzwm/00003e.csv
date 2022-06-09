@@ -1,4 +1,0 @@
-"0","for (data$agea in 1:length(data)) {
-"
-"2","Error: unexpected '$' in ""for (data$""
-"

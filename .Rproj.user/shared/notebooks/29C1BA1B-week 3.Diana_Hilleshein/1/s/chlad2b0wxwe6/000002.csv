@@ -1,5 +1,0 @@
-"0","a2 <- data %>% group_by(gndr, cntry) %>% "
-"0","  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))"
-"1","`summarise()` has grouped output by 'gndr'. You can override using the `.groups` argument.
-"
-"0","head(a2) #print just first 2 pages to not make the report too large"
