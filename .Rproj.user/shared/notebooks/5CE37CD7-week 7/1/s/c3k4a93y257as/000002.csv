@@ -1,0 +1,9 @@
+"0","# set working directory"
+"0","setwd(""C:/R scripts/DWA2022"")"
+"0",""
+"0","#import data"
+"0","library(haven) # to open csv"
+"0","data <- read_sav(""C:/R scripts/DWA2022/ESS9e03_1.sav"")"
+"2","Error in df_parse_sav_file(spec, encoding, user_na, cols_skip, n_max,  : 
+  bad value
+"

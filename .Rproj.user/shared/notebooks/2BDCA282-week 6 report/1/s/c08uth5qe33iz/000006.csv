@@ -1,0 +1,12 @@
+"0","#testing for normal distribution"
+"0","library(ggpubr)"
+"0","ggqqplot(data6$img_avg)"
+"2","Warning:"
+"2"," Removed 7 rows containing non-finite values (stat_qq).
+"
+"2","Warning:"
+"2"," Removed 7 rows containing non-finite values (stat_qq_line).
+"
+"2","Warning:"
+"2"," Removed 7 rows containing non-finite values (stat_qq_line).
+"

@@ -1,0 +1,6 @@
+"0",""
+"0","ggplot(data6, aes(x = age3cat, y = img_avg, fill = age3cat)) +"
+"0","  geom_boxplot() "
+"2","Warning:"
+"2"," Removed 7 rows containing non-finite values (stat_boxplot).
+"

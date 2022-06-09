@@ -1,0 +1,4 @@
+"0",""
+"0","# histogram with normal curve"
+"0","x <- data5$img_sum; s <- sd(x, na.rm = TRUE); m <- mean(x, na.rm = TRUE)"
+"0","hist(data5$img_sum, probability=TRUE)"

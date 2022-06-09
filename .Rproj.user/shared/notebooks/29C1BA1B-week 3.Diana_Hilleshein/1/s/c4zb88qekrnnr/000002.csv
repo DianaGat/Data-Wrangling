@@ -1,0 +1,4 @@
+"0","# Merge"
+"0","full_set <- merge(set1, set2, by = c(""cntry"", ""idno""))"
+"0","View(full_set) #success!"
+"0","head(full_set)"

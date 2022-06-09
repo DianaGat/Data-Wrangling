@@ -1,0 +1,59 @@
+"0","#sel_var <- select(data, imsmetn, imdfetn, impcntr)"
+"0","which(colnames(data) == ""imsmetn"")"
+"1","[1]"
+"1"," 109"
+"1","
+"
+"0","which(colnames(data) == ""imdfetn"")"
+"1","[1]"
+"1"," 110"
+"1","
+"
+"0","which(colnames(data) == ""impcntr"")"
+"1","[1]"
+"1"," 111"
+"1","
+"
+"0","freq(data[,109:111])"
+"1","Frequencies  
+data[, 109:111]$imsmetn  
+Label: Allow many/few immigrants of same race/ethnic group as majority  
+Type: Numeric  
+
+               Freq   % Valid   % Valid Cum.   % Total   % Total Cum.
+----------- ------- --------- -------------- --------- --------------
+          1   11898     25.61          25.61     24.03          24.03
+          2   21612     46.52          72.13     43.64          67.67
+          3    9474     20.39          92.53     19.13          86.80
+          4    3472      7.47         100.00      7.01          93.81
+       <NA>    3063                               6.19         100.00
+      Total   49519    100.00         100.00    100.00         100.00
+"
+"1","
+data[, 109:111]$imdfetn  
+Label: Allow many/few immigrants of different race/ethnic group from majority  
+Type: Numeric  
+
+               Freq   % Valid   % Valid Cum.   % Total   % Total Cum.
+----------- ------- --------- -------------- --------- --------------
+          1    7273     15.67          15.67     14.69          14.69
+          2   18722     40.35          56.02     37.81          52.50
+          3   13628     29.37          85.39     27.52          80.02
+          4    6781     14.61         100.00     13.69          93.71
+       <NA>    3115                               6.29         100.00
+      Total   49519    100.00         100.00    100.00         100.00
+"
+"1","
+data[, 109:111]$impcntr  
+Label: Allow many/few immigrants from poorer countries outside Europe  
+Type: Numeric  
+
+               Freq   % Valid   % Valid Cum.   % Total   % Total Cum.
+----------- ------- --------- -------------- --------- --------------
+          1    6833     14.27          14.27     13.80          13.80
+          2   17738     37.03          51.30     35.82          49.62
+          3   14768     30.83          82.13     29.82          79.44
+          4    8561     17.87         100.00     17.29          96.73
+       <NA>    1619                               3.27         100.00
+      Total   49519    100.00         100.00    100.00         100.00
+"

@@ -1,0 +1,73 @@
+---
+title: "Week 1 Report"
+author: "Diana Hilleshein"
+date: "1/17/2022"
+output: pdf_document
+
+---
+On this week I installed software that I will use for this course. My choice is RStudio. I know how to work with SPSS better though I have experience with both software. However, I want to advance my knowledge in R rather than SPSS.
+
+There were no any problems installing RStudio since I had already had it.  
+Data was downloaded from: <https://www.europeansocialsurvey.org/download.html?file=ESS9e03_1&y=2018>  
+Codebook fro the data can be found by the following link: <chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fwww.europeansocialsurvey.org%2Fdocs%2Fround9%2Fsurvey%2FESS9_appendix_a7_e03_1.pdf&clen=2111156>  
+
+The European Social Survey (ESS) is an academically-driven multi-country survey, which has been administered in over 35 countries to date. Its three aims are, firstly – to monitor and interpret changing public attitudes and values within Europe and to investigate how they interact with Europe's changing institutions, secondly – to advance and consolidate improved methods of cross-national survey measurement in Europe and beyond, and thirdly – to develop a series of European social indicators, including attitudinal indicators. For the course we will use round 9 ESS.
+
+Variables of the datases are separated for the following groups:   
+ Country  
+ Weights  
+ Media and social trust  
+ Politics  
+ Subjective well-being, social exclusion, religion, national and ethnic identity  
+ Timing of life  
+ Gender, Year of birth and Household grid  
+ Socio-demographics  
+ Justice and Fairness  
+ Human values  
+ Administrative variables  
+ Sample Design variables  
+ User defined variables  
+
+While downloading data from the website, the problem I encountered was probably a beginner's problem: the available datasets were only for SPSS, SAS, and STATA. I downloaded and opened the data in SPSS and changed the file type to ".csv". The rest of the work was familiar for me: I imported the data to R. While working, I checked out the demo R document that was given to us by the teacher. I saw there that I could use "haven" package to solve this problem. The code that the teacher used was the following:  
+```{r eval=FALSE}
+# install package haven
+install.packages("haven")
+# load/attach package 
+library(haven)
+
+# import data
+# You can use file menu also: File - Import Dataset - From SPSS
+ess <- read_sav("ESS9e03_1.sav")
+```
+Here ess is name of the imported dataset, "ESS9e03_1.sav" is name of the file with data. TThe code provides the capability of reading files in sav format. I was not aware of this package before, and I found it very useful. Since I have already changed the file, I proceeded with my solution, but next time I will use the "haven" package that would significantly reduce my time converting data files.
+I looked at the dataset after importing and it looked good. I then saved the data to a folder. Initially, I wanted to save the data in ".csv" format, but I saw that teachers use ".rda" format. Since the data file is huge, I used rda format to make the loading process faster. Here is a link to where I learned the difference between the formats: <https://stackoverflow.com/questions/58699848/best-file-type-for-loading-data-in-to-r-speed-wise>.  
+
+```{r}
+setwd("C:/R scripts/DWA2022")
+data2 <- read.table("C:/R scripts/DWA2022/ESS9e03_1.csv", header=T, sep = ';')
+
+#View(data)
+
+save(data2,file="data2.csv")
+```
+Then I saved the report as a pdf file.  
+
+During the first week's exercise, I learned how to load non-R-type data files using the "haven" package, as well as some differences between the formats in which data files can be saved in R, and which one is most suitable for big data files.
+
+```{r}
+library(ggplot2)
+library(GGally)
+library(haven)
+library(tidyverse)
+library(corrplot)
+
+#data2 <- data.frame(data2)
+data <- unlist(data)
+
+interested_var <- select(data2, "stflife", "polintr", "actrolga", "imwbcnt", "imbgeco", "imueclt", "imsmetn", "imdfetn", "impcntr")
+ggpairs(interested_var, mapping = aes(alpha=0.3, lower = list(combo=wrap("facethist", bins = 20))))
+```
+
+```{r}
+ggplot(data2$agea, aes(value)) + geom_histogram() + geom_density()
+```

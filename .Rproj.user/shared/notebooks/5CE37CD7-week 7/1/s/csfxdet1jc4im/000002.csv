@@ -1,0 +1,42 @@
+"0","s1<- data7 %>% "
+"0","  ggplot(., aes(x = img_avg, y = stflife)) +"
+"0","  geom_point(position = ""jitter"") +"
+"0","  geom_smooth(method = lm)"
+"0",""
+"0","s2<-data7 %>% "
+"0","  ggplot(., aes(x = img_avg, y = polintr)) +"
+"0","  geom_point(position = ""jitter"") +"
+"0","  geom_smooth(method = lm)"
+"0",""
+"0","s3<- data7 %>% "
+"0","  ggplot(., aes(x = img_avg, y = agea)) +"
+"0","  geom_point(position = ""jitter"") +"
+"0","  geom_smooth(method = lm)"
+"0",""
+"0","s4<- data7 %>% "
+"0","  ggplot(., aes(x = img_avg, y = gndr)) +"
+"0","  geom_point(position = ""jitter"") +"
+"0","  geom_smooth(method = lm)"
+"0",""
+"0","library(cowplot)"
+"0","plot_grid("
+"0","  s1, s2, s3, s4,"
+"0","  labels = c('1', '2', '3', '4'),"
+"0","  align=""hv"""
+"0",")"
+"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"
+"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"
+"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"
+"2","Don't know how to automatically pick scale for object of type haven_labelled/vctrs_vctr/double. Defaulting to continuous.
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"

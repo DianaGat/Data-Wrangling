@@ -1,0 +1,6 @@
+"0","a5 <- data %>% group_by(agea, cntry) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+"
+"1","`summarise()` has grouped output by 'agea'. You can override using the `.groups` argument.
+"
+"0","head(a5)"

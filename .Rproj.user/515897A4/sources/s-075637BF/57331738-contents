@@ -1,0 +1,303 @@
+---
+title: Data Wrangling and  Analysis,  Spring  2022, University of Helsinki  Homework
+  report
+date: "3/3/2022"
+output:
+  html_document:
+    df_print: paged
+---
+# Description on the study  
+In my study, I want to examine association of attitude to immigrant with people`s age, gender, satisfaction with life, interest in politics and trust in people. I want to observe differences between Finaland and Italy. For this purpose I will use ESS data that I describe below.  
+
+## General information on the data  
+
+Data was downloaded from:   <https://www.europeansocialsurvey.org/download.html?file=ESS9e03_1&y=2018>.    
+Codebook fro the data can be found by the following link:   <chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fwww.europeansocialsurvey.org%2Fdocs%2Fround9%2Fsurvey%2FESS9_appendix_a7_e03_1.pdf&clen=2111156>.  
+  
+The European Social Survey (ESS) is an academically-driven multi-country survey, which has been administered in over 35 countries to date. Its three aims are, firstly – to monitor and interpret changing public attitudes and values within Europe and to investigate how they interact with Europe's changing institutions, secondly – to advance and consolidate improved methods of cross-national survey measurement in Europe and beyond, and thirdly – to develop a series of European social indicators, including attitudinal indicators. For the course we will use round 9 ESS.  
+
+# Import and restrict data  
+```{r}
+# set working directory
+setwd("C:/R scripts/DWA2022")
+
+#import data
+library(haven) # to open csv
+data <- read_sav("C:/R scripts/DWA2022/ESS9e03_1.sav")
+head(data)
+dim(data) #everything is right
+
+# create a sum var, wxluding missing values
+library(tidyverse)
+library(dplyr)
+
+#create mean var
+data$img_avg <- rowMeans(select(data, imwbcnt, imbgeco, imueclt), na.rm = TRUE)
+head(data$img_avg)
+
+# select Finnish and Italian data
+cntry_target <- c("EE", "LT", "LV")
+data7 <- data %>% filter(cntry %in% cntry_target) %>% 
+  select(., cntry, agea, gndr, img_avg, polintr, stflife)
+data7 <- data7[complete.cases(data7[ ,c("cntry", "agea", "gndr", "img_avg", "polintr", "stflife")]), ]
+summary(data7)
+head(data7)
+dim(data7) #looks right!
+```
+```{r}
+hist(data7$img_avg)
+summary(data7)
+
+library(summarytools)
+with(data7,
+stby(data=data7$img_avg,
+INDICES=data7$cntry,
+FUN=descr,
+stats=c("mean","sd","min","med","max","skewness"))) 
+
+
+```
+
+```{r}
+# histograms by groups for img_avg
+ggplot(data7, aes(x = img_avg)) +
+  geom_histogram() + facet_grid(cntry ~ .)
+```
+Visually I can see that the histogram has a tail that goes to left. I will test if the data normally distributed.  
+```{r}
+#testing for normal distribution
+library(ggpubr)
+ggqqplot(data7$img_avg)
+``` 
+Dots are not following like entirely, going out of confidence intervals on both ends.
+
+```{r}
+#testing for normal distribution
+library(dplyr)
+library(rstatix)
+data7 %>% group_by(cntry) %>% shapiro_test(img_avg)
+# Statistical test of normality
+# H0: variable is normally distributed, H1: variable is not normally distributed
+shapiro.test(data7$img_avg)
+ks.test(x = data7$img_avg, y = pnorm)
+```
+As the p-value is smaller than 0.05, I reject the normality hypothesis. Therefore, I need to use the nonparametric version, the kruskal.test function: <https://rc2e.com/linearregressionandanova#recipe-id231>.  
+```{r}
+# H0: The mean is the same for all groups
+# H1: At least the mean of one group is different
+kruskal.test(data7$img_avg ~ data7$cntry)
+```
+Conventionally, p = 0.346 indicates that there is no a significant difference between the medians of three age groups. I don`t need to perform multiple pairwise-comparison, but I will do it as I am interested
+
+(alternative: p = 0.05 indicates that there is a significant difference between the medians of three age groups. But we don’t know which pairs of groups are different. Next we will perform multiple pairwise-comparison  to determine if the mean difference between specific pairs of group are statistically significant: <https://www.spcforexcel.com/knowledge/comparing-processes/bonferronis-method>).  
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+library(rstatix)
+#H0: attitude to immigrants of young middel and old are equal
+#H1: attitude to immigrants of young middel and old are different
+
+pairwise.wilcox.test(data7$img_avg, data7$cntry, p.adjust.method = "bonferroni")
+```
+```{r}
+library(summarytools)
+with(data7,
+stby(data=data7$img_avg,
+INDICES=data7$cntry,
+FUN=descr,
+stats=c("mean","sd","min","med","max","skewness"))) 
+```
+```{r}
+#library(ggplot2)
+#library(GGally)
+#$gndr <- as.numeric(data7$gndr)
+#p <- ggpairs(data7, mapping = aes(col = gndr, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+#p
+```
+```{r}
+#data_cat <- select(data7, "gndr", "polintr")
+#data_cont <- select(data7, "agea", "img_avg")
+#gather(data_cat) %>% ggplot(aes(value, col = data7gndr)) + facet_wrap("key", scales = "free") + geom_bar()
+#gather(data_cont) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_histogram()
+
+#boxplot(data7$gndr)
+#boxplot()
+library(ggplot2)
+library(dplyr)
+
+library(purrr)
+
+
+#data7$gndr <- as.character(data7$gndr)
+#data7["gndr"][data7["gndr"] == "1"] <= "Male"
+#["gndr"][data7["gndr"] == "2"] <= "Female"
+
+#ggplot(data7, aes(polintr, ..value.., fill = factor(gndr))) + geom_bar(stat = "identity", position = position_dodge()) + ggtitle ("")
+
+
+g1 <- ggplot(data = data7, aes(x = polintr, fill = factor(gndr))) + geom_bar()
+
+g2 <- ggplot(data = data7, aes(x = agea, fill = factor(gndr))) + geom_histogram()
+
+g3 <- ggplot(data = data7, aes(x = img_avg, fill = factor(gndr))) + geom_bar()
+
+g4 <- ggplot(data = data7, aes(x = stflife, fill = factor(gndr))) + geom_bar()
+
+g5 <- ggplot(data = data7, aes(x = gndr, fill = factor(gndr)))+ geom_bar()
+
+library(cowplot)
+plot_grid(
+  g1, g2, g3, g4,
+  labels = c('1', '2', '3', '4'),
+  align="hv"
+)
+g5
+
+boxplot(select(data7, - cntry, -agea))
+boxplot(data7$agea)
+View(data7)
+mean(data7$agea)
+summary(data7)
+
+table(data7$polintr)
+```
+
+
+
+Multiple pairwise-comparison test indicates that there are no significnat differences between medians.  
+```{r}
+corrmatrix <- cor(select(data7, img_avg, agea, gndr, polintr, stflife), use="complete.obs")
+corrmatrix
+
+library(corrplot)
+corrplot(corrmatrix)
+```
+```{r}
+data7 <- data7 %>%
+mutate(img_avg_cat = cut(img_avg, breaks = c(0,2,4,6,8, Inf), labels = c("Bad influence","3-4", "5-6", "7-8", "Good influence")))
+data7 <- data7 %>%
+mutate(stflife_cat = cut(stflife, breaks = c(0,2,4,6,8, Inf), labels = c("Extremely dissatisfied","3-4", "5-6", "7-8", "Extremely satisfied")))
+
+t1 <- table(data7$img_avg_cat, data7$stflife_cat)
+prop.table(t1) # sum of all values
+
+prop.table(t1, 1) # sum of all values
+```
+```{r}
+library(gplots)
+balloonplot(t(t1), main ="effect of immigrants and satisfaction with life",
+ label = T, show.margins = TRUE)
+
+mosaicplot(t1, shade = TRUE, las=2,
+ main = "happiness and satisfaction")
+
+```
+
+```{r}
+library(janitor)
+data7 %>% tabyl(img_avg, stflife, show_na=F) %>% chisq.test()
+
+#print the results of x*2 test
+results_chi1 <- chisq.test(data7$img_avg_cat, data7$stflife_cat)
+results_chi1$observed
+results_chi1$expected #estimated
+results_chi1$residuals # The difference between observed and expected values
+
+```
+
+```{r}
+img_avg_males <- data7  %>% filter(gndr == 1) %>% select(img_avg)
+img_avg_females <- data7  %>% filter(gndr == 2) %>% select(img_avg)
+
+
+img_avg_males <- as.numeric(unlist(img_avg_males))
+img_avg_females <- as.numeric(unlist(img_avg_females))
+
+
+# test first the equality of variances
+var.test(img_avg ~ gndr, data = data7)
+
+# Computation of an unpaired two-samples t-test:
+t.test(img_avg_males, img_avg_females, var.equal = TRUE)
+
+#Mann-Whitney - test
+wilcox.test(data7$img_avg ~ data7$gndr)
+```
+```{r}
+s1<- data7 %>% 
+  ggplot(., aes(x = img_avg, y = stflife)) +
+  geom_point(position = "jitter") +
+  geom_smooth(method = lm)
+
+s2<-data7 %>% 
+  ggplot(., aes(x = img_avg, y = polintr)) +
+  geom_point(position = "jitter") +
+  geom_smooth(method = lm)
+
+s3<- data7 %>% 
+  ggplot(., aes(x = img_avg, y = agea)) +
+  geom_point(position = "jitter") +
+  geom_smooth(method = lm)
+
+s4<- data7 %>% 
+  ggplot(., aes(x = img_avg, y = gndr)) +
+  geom_point(position = "jitter") +
+  geom_smooth(method = lm)
+
+library(cowplot)
+plot_grid(
+  s1, s2, s3, s4,
+  labels = c('1', '2', '3', '4'),
+  align="hv"
+)
+```
+```{r}
+# A simple regression model
+lm1 <- lm(img_avg ~ stflife + polintr + agea +gndr, data = data7)
+summary(lm1)
+
+lm2 <- lm(img_avg ~ stflife + polintr + agea, data = data7)
+summary(lm2)
+
+lm3 <- lm(img_avg ~ stflife + polintr  +gndr, data = data7)
+summary(lm3)
+
+lm4 <- lm(img_avg ~ stflife + polintr, data = data7)
+summary(lm4)
+
+
+
+AIC(lm1) 
+BIC(lm1)
+
+AIC(lm2) 
+BIC(lm2)
+
+AIC(lm3) 
+BIC(lm3)
+
+AIC(lm4) 
+BIC(lm4)
+
+data7
+
+# Scatter plot with some jittering & regression line.
+ggplot(data7, aes(x = stflife, y = img_avg)) +
+ geom_point(position = "jitter") +
+ geom_smooth(method = lm)
+# Diagnostic plots:
+layout(matrix(c(1,2,3,4),2,2)) 
+plot(lm1)
+```
+```{r}
+# diagnostic plots
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
+plot(lm4)
+```
+
+
+
+
+
+

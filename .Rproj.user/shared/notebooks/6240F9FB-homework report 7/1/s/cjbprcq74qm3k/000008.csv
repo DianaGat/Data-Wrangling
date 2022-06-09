@@ -1,0 +1,4 @@
+"0","# select Finnish data"
+"0","data7 <- data %>% filter(cntry == ""FI"") %>% "
+"0","  select(., idno, agea, gndr, img_avg, img_sum, stflife, ppltrst, polintr)"
+"0","head(data7)"

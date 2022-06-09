@@ -1,0 +1,152 @@
+---
+title: "Data Wrangling and  Analysis,  Spring  2022, University of Helsinki  Homewprk report"
+author: "Diana Hilleshein"
+date: "3/3/2022"
+output: pdf_document
+---
+# Week 7: Regression model (cont.), missing values, dates, functions  
+## General information on the data  
+
+Data was downloaded from: <https://www.europeansocialsurvey.org/download.html?file=ESS9e03_1&y=2018>.    
+Codebook fro the data can be found by the following link:  <chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fwww.europeansocialsurvey.org%2Fdocs%2Fround9%2Fsurvey%2FESS9_appendix_a7_e03_1.pdf&clen=2111156>.  
+
+The European Social Survey (ESS) is an academically-driven multi-country survey, which has been administered in over 35 countries to date. Its three aims are, firstly – to monitor and interpret changing public attitudes and values within Europe and to investigate how they interact with Europe's changing institutions, secondly – to advance and consolidate improved methods of cross-national survey measurement in Europe and beyond, and thirdly – to develop a series of European social indicators, including attitudinal indicators. For the course we will use round 9 ESS.
+```{r}
+# set working directory
+setwd("C:/R scripts/DWA2022")
+
+#import data
+library(haven) # to open csv
+data <- read_sav("C:/R scripts/DWA2022/ESS9e03_1.sav")
+head(data)
+dim(data) #everything is right
+```
+```{r}
+# create a sum var
+library(tidyverse)
+library(dplyr)
+data$img_sum <- rowSums(select(data, imwbcnt, imbgeco, imueclt), na.rm = TRUE)
+head(data$img_avg)
+
+#create mean var
+data$img_avg <- rowMeans(select(data, imwbcnt, imbgeco, imueclt), na.rm = TRUE)
+head(data$img_avg)
+```
+```{r}
+# select Finnish data
+data7 <- data %>% filter(cntry == "FI") %>% 
+  select(., idno, agea, gndr, img_avg, img_sum, stflife, ppltrst, polintr)
+head(data7)
+dim(data7) #looks right!
+```
+As well as in a demo file, I created a restricted data. I believe it will will significantly increase speed of processing.  
+Used for **img_avg** and **img_sum** variables:  
+- **imsmetn** -Allow many/few immigrants of same race/ethnic group as majority (scale from 1 to 4, 1 = Allow many to come and live here, ... 4 = Allow none)   
+- **imdfetn** -Allow many/few immigrants of different race/ethnic group from majority (scale from 1 to 4, 1 = Allow many to come and live here, ... 4 = Allow none)  
+- **impcntr** -Allow many/few immigrants from poorer countries outside Europe (scale from 1 to 4, 1 = Allow many to come and live here, ... 4 = Allow none)  
+
+**Also the following variables are used:**   
+1) **idno** - id number  
+2) **agea** - Age of respondent, calculated (integer) 
+3) **gndr**- Gender (1 = Male, 2 = Female)  
+4) **stflife** - How satisfied with life as a whole (from 0 to 10, 0 = extremely dissatisfied, ... 10 = extremely satisfied)  
+5) **ppltrst** - Most people can be trusted or you can't be too careful (scale from 0 to 10, 0 = You can't be too careful, ... 10 = Most people can be trusted)  
+6) **polintr** - How interested in politics (scale from 1 to 4, 1 = Very interested, ... 4 = Not at all interested)  
+7) **img_avg** - Allow many/few immigrants (cont from 0 to 10)  
+8) **img_sum** - Allow many/few immigrants (scale from 0 to 30, 0 = Allow many to come and live here, ... 30 = Allow none)  
+
+from positive to negative
+from net to pos
+from neg to pos
+positive to negative
+Since not all the variables have same negative/positive direction, I will need to recode some of them (stflife, ppltrst).  
+
+But firstly, I will check summary on the dataset.
+```{r}
+summary(data7)
+```
+```{r}
+#recoding stflife
+library(plyr) #for recording
+library(dplyr)
+
+data7$stflife <- as.character(data7$stflife) #since revalue works just for characters
+
+#it will be a new recoded variable
+data7$stflife_rec =revalue(data7$stflife, c("1" = "10", "2" = "9", "3" = "8", "4" = "7", "5" = "6", "6" = "5", "7" = "4", "8" = "3", "9" = "2", "10" = "1"))
+
+data7$stflife_rec <- as.factor(data7$stflife_rec)
+
+#recoding ppltrst
+data7$ppltrst <- as.character(data7$ppltrst) #since revalue works just for characters
+
+#it will be a new recoded variable
+data7$ppltrst_rec =revalue(data7$ppltrst, c("1" = "10", "2" = "9", "3" = "8", "4" = "7", "5" = "6", "6" = "5", "7" = "4", "8" = "3", "9" = "2", "10" = "1"))
+
+data7$ppltrst_rec <- as.factor(data7$ppltrst_rec)
+```
+Here is a new description for all variables:  
+1) **idno** - id number  
+2) **agea** - Age of respondent, calculated (integer) 
+3) **gndr**- Gender (1 = Male, 2 = Female)  
+4) **stflife** - How satisfied with life as a whole (from 0 to 10, 0 = extremely satisfied, ... 10 = extremely dissatisfied)  
+5) **ppltrst** - Most people can be trusted or you can't be too careful (scale from 0 to 10, 0 = Most people can be trusted, ... 10 = You can't be too careful)  
+6) **polintr** - How interested in politics (scale from 1 to 4, 1 = Very interested, ... 4 = Not at all interested)  
+7) **img_avg** - Allow many/few immigrants (cont from 0 to 10)  
+8) **img_sum** - Allow many/few immigrants (scale from 0 to 30, 0 = Allow many to come and live here, ... 30 = Allow none)  
+
+Now we can work with the dataset. From the summary it is obvious that some variables have missing values. Lest visualize them:  
+```{r}
+#install.packages("VIM")
+library(VIM) 
+
+missing_img <- select(data, imwbcnt, imbgeco, imueclt)
+
+# visualize missingness 
+missing <- aggr(missing_img, prop = F, numbers = T)
+```
+The plot on the left shows count of missing values for each variable. Each of variables have around 2000 missing avriables.  
+The plot on the right shows the combination of missing values between variables  
+- The first blue row shows that 45693 rows contain no NA  
+- There are 762 rows where imwbcnt and imbgeco, imueclt contain NA at the same time  
+- There are 850 rows where imwbcnt contains a missing value  
+- and so on  
+
+```{r}
+# counts missing values per row
+missing_img$missing_n <- rowSums(is.na(missing_img))
+View(missing_img) #in the last column we can see count of missing values in every column
+
+table(missing_img$missing_n, useNA = "ifany")
+```
+Sum and avg variables that I created consists of 3 variables. Number of rows without missing values is 45693. There are 2277 rows that contain one missing value, 787 rows with missing 2 missing values, 762 rows with 3 missing values.  
+
+Let's create once again sum variable, but now we'll take into account the missing values. I choose 4 as a limit for number of missing values.  
+
+```{r}
+# sum
+dataX <- missing_img %>%  filter(missing_n <= 2) %>% 
+  select(imwbcnt, imbgeco, imueclt) %>% 
+  mutate(img_sum2 = rowSums(., na.rm = TRUE))
+
+summary(dataX$img_sum2)
+head(dataX, n=25)
+
+
+# mean
+dataXX <- missing_img %>%  filter(missing_n <= 2) %>% 
+  select(imwbcnt, imbgeco, imueclt) %>% 
+  mutate(img_avg2 = rowMeans(., na.rm = TRUE))
+
+summary(dataXX$img_avg2)
+head(dataXX, n=25)
+
+# original versions:
+missing_img$img_sum <- rowSums(select(missing_img, imwbcnt, imbgeco, imueclt), na.rm = TRUE)
+missing_img$img_avg <- rowMeans(select(missing_img, imwbcnt, imbgeco, imueclt), na.rm = TRUE)
+```
+
+
+
+
+

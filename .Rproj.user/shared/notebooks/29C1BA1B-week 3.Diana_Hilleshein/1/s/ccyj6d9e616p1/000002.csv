@@ -1,0 +1,4 @@
+"0","options(tibble.print_max = Inf) "
+"0","# I will be interested in a2 and a5 aggregations"
+"0",""
+"0","head(a2)"

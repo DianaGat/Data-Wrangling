@@ -1,0 +1,5 @@
+"0",""
+"0","# What happens if we don`t separate by gender?"
+"0","a3 <- data %>% group_by(cntry) %>% "
+"0","  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))"
+"0","head(a3)"

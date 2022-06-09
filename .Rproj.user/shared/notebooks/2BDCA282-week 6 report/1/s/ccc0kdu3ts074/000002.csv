@@ -1,0 +1,20 @@
+"0","library(summarytools)"
+"0","with(data6,"
+"0","stby(data=data6$img_avg,"
+"0","INDICES=data6$age3cat, #form froups by gender => male/female ==> find summaries of social trust for each group"
+"0","FUN=descr,"
+"0","stats=c(""mean"",""sd"",""min"",""med"",""max"",""skewness""))) "
+"1","Descriptive Statistics  
+img_avg by age3cat  
+Data Frame: data6  
+N: 544  
+
+                 young   middle-aged     old
+-------------- ------- ------------- -------
+          Mean    6.09          6.15    6.05
+       Std.Dev    1.87          1.96    1.74
+           Min    0.00          0.00    0.00
+        Median    6.33          6.33    6.33
+           Max   10.00         10.00   10.00
+      Skewness   -0.68         -0.63   -0.76
+"

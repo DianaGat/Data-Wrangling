@@ -1,0 +1,217 @@
+---
+title: "week 3"
+author: "Diana Hilleshein"
+date: "2/2/2022"
+header-includes:
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+output: pdf_document
+---
+```{r eval=FALSE, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+
+```{r}
+setwd("C:/R scripts/DWA2022")
+library(haven)
+
+# import data
+data <- read_sav("C:/R scripts/DWA2022/ESS9e03_1.sav")
+
+
+save(data,file="data.csv")
+head(data)
+dim(data)#everything is right
+```
+
+## Part 1. Subsetting (rows)  
+
+### Create subfiles (e.g. use gender or country or…)  
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(sjlabelled)
+get_labels(data$gndr) #to know labels for the categories
+table(data$gndr) # there are 23020 males and 26499 females
+# sub for males
+males <- data %>% filter(gndr == 1) # 1 for males
+table(males$gndr) #number in the table matches number of males that we got before
+dim(males) # double check. Again number of observations is the same as number of males, so we successfully made the subsetting for males
+```
+Subsetting for males is done, now I ell do the same for females.  
+```{r}
+females <- data %>% filter(gndr == 2) # 2 for females
+table(females$gndr) # 26499
+dim(females)
+```
+Subsetting for females is done. Both subsets have right number of observations and 572 cases.
+
+### Try to combine subfiles. Report your attempts.  
+
+```{r}
+# Combine datasets
+comb_data <- rbind(males, females) # df1 = males, df2 = females
+table(comb_data$gndr)
+```
+To understand the "rbind" function I googled how to use it: <https://www.statology.org/rbind-in-r/>, in the "Example 4: Rbind Two Data Frames
+" section we can see an example.  
+After I combines the subsets, I checked the number of males and females in the combined set. The number of males and females is right!  
+
+## Part 2. Merging 
+
+### Create two files where you select some variables. Remember to include variables CNTRY and IDNO into both of the files. Those will be your "key" variables when you merge/combine these two datasets.  
+
+```{r}
+#create two sets
+set1 <- select(data, idno, cntry, gndr)
+set2 <- select(data, idno, cntry, stflife)
+head(set1) #all good
+head(set2) #all good
+```
+
+### Try to merge files. Remember to use CNTRY and IDNO variables as keys. Report your attempts.  
+
+```{r}
+# Merge
+full_set <- merge(set1, set2, by = c("cntry", "idno"))
+View(full_set) #success!
+head(full_set)
+```
+Indeed, examining the data i could see that ID numbers for participants were the  same, while countries were different. For example:  
+ID cntry gndr  
+2   BG    2   
+2   CZ    1  
+  
+Ir was easy to make two files with different variable and merge them using idno and cntry as key variables. I didn`t have any problems since I have already done it before. It was long time ago, so, some practice was nice to refresh my skills.  
+
+## Part 3. Aggregating  
+
+For the task I will use following variables:  
+1) **gndr**-Gender (1 = Male, 2 = Female)  
+2) **agea** -Age of respondent, calculated (integer)  
+3) **cntry** - Country of respondent (AT = Austria, BE = Belgium, BG = Bulgaria, CH = Switzerland, CY = Cyprus,  CZ = Czechia, DE = Germany, DK = Denmark, EE = Estonia, ES = Spain, FI = Finland, FR = France, GB = United Kingdom, HR = Croatia, HU = Hungary, IE = Ireland, IS = Iceland, IT = Italy, LT = Lithuania,  LV = Latvia, ME = Montenegro, NL = Netherlands, NO = Norway, PL = Poland, PT = Portugal, RS = Serbia,  SE = Sweden, SI = Slovenia, SK = Slovakia)  
+4) **stflife** -How satisfied with life as a whole (from 0 to 10, 0 = extremely dissatisfied, 10 = extremely satisfied)  
+
+### Aggregate by gender and calculate some descriptives for one or some variable(s)  
+
+I didn`t know what is na.rm and decided to Google. This website helped me a lot to understand it: <https://www.programmingr.com/tutorial/na-rm/>.  
+```{r message=FALSE, warning=FALSE}
+table(data$agea)
+table(data$gndr)
+table(data$cntry)
+table(data$stflife)
+
+# aggregate by gender. Note: na.rm = TRUE
+a1 <- data %>% group_by(gndr) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE)) #men are a bit more satisfied with life then women. But in average level of satisfaction is above average for man and for women.
+a1 
+```
+
+
+### Aggregate by country and calculate some descriptives for one or some variable(s)  
+
+```{r message=FALSE, warning=FALSE}
+a2 <- data %>% group_by(gndr, cntry) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+head(a2) #print just first 2 pages to not make the report too large
+a2[which(a2$mean_stflife == max(a2$mean_stflife)), ] #women in Denmark are the most satisfied with life
+a2[which(a2$mean_stflife == min(a2$mean_stflife)), ] #women in Bulgaria are the lest satisfied with life
+
+# What happens if we don`t separate by gender?
+a3 <- data %>% group_by(cntry) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+head(a3)
+a3[which(a3$mean_stflife == max(a3$mean_stflife)), ] #people in Denmark are still the most satisfied with life
+a3[which(a3$mean_stflife == min(a3$mean_stflife)), ] #people in Bulgaria are still the lest satisfied with life
+```
+Therefore, it seems like women have wider range of satisfaction/unsatisfactory, but generally speaking the results of women are closer to results of men.  
+
+```{r}
+# What is the most and the least satisfied age?
+a4 <- data %>% group_by(agea) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+head(a4)
+a4[which(a4$mean_stflife == max(a4$mean_stflife)), ] #people aged 16 tend to be the most satisfied with life
+a4[which(a4$mean_stflife == min(a4$mean_stflife)), ] #people aged 83 tend to be the lest satisfied with life, but, happily, still above average!
+
+#Now I want to see difference by age and countries
+a5 <- data %>% group_by(agea, cntry) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+head(a5)
+a5[which(a5$mean_stflife == max(a5$mean_stflife)), ]
+a5[which(a5$mean_stflife == min(a5$mean_stflife)), ] #this code gave NA in age, so I need to check if there are missing values. Nevertheless, there is a person from Bulgaria of unknown age who feels very unsatisfied with life ):
+
+library(tidyr)
+sum(is.na(data$agea)) # there are 222 missing values, so I need to change the code. I didn`t find a good way to show if there are NA...
+data <- data %>% drop_na(agea)
+
+a5 <- data %>% group_by(agea, cntry) %>% 
+  summarise(n_stflife = n(), mean_stflife = mean(stflife, na.rm = TRUE))
+head(a5)
+a5[which(a5$mean_stflife == max(a5$mean_stflife)), ] #people from Denmark are still leading in being the most satisfied! People aged 88 from Denmark and Island are the most satisfied.
+a5[which(a5$mean_stflife == min(a5$mean_stflife)), ] #people from Portugal aged 90 are the least satisfied.
+```
+I looked at extreme (max/min) indicators of mean_lifestyle. Nevertheless, it would be right to see distributions for the findings.  
+
+```{r}
+options(tibble.print_max = Inf) 
+# I will be interested in a2 and a5 aggregations
+
+head(a2)
+head(a5)
+
+#plotting
+library(ggplot2)
+ggplot(a2, aes(x = cntry, y = mean_stflife, fill = factor(gndr))) +
+  geom_bar(stat="identity", position=position_dodge()) + scale_fill_manual(values = c("1" = "#6666CC",
+  "2" = "#CC6699")) + xlab("countries") +  ylab("mean life satisfaction") + ggtitle("Plot 1. Mean staisfaction with life among differnet countries")
+```
+
+As I already have found, people from Bulgaria are the least satisfied in comparison to all countries. Serbia is on the second place of the least satisfied.  
+Meanwhile, people from Denmark are the happiest.
+
+
+```{r message=FALSE, warning=FALSE}
+library(scales)
+library(viridis)
+ggplot(a5, aes(x = cntry, y = agea)) + geom_raster(aes(fill = mean_stflife))+ scale_fill_gradient2(low="#FF9900") + scale_fill_viridis(option="B") + xlab("countries") +  ylab("age") + ggtitle("Plot 2. Mean staisfaction with life among differnet countries
+                                                                                                                                                                                                \nand ages")
+
+# for better vizualization
+mean(a5$mean_stflife)
+a5.1 <- a5 %>% filter(mean_stflife <= 7)
+a5.2 <- a5 %>% filter(mean_stflife  > 7)
+
+
+
+ggplot(a5.2, aes(x = cntry, y = agea)) + geom_raster(aes(fill = mean_stflife))+ scale_fill_gradient2(low = "#ddd85e", 
+    high = "#6f1873", 
+    breaks = pretty_breaks(n = 5)) + scale_fill_viridis(option="A")+ xlab("countries") +  ylab("age") + ggtitle("Plot 3. Mean staisfaction with life among differnet countries
+                                                                                                                \nand ages (above average)")
+
+ggplot(a5.1, aes(x = cntry, y = agea)) + geom_raster(aes(fill = mean_stflife))+ scale_fill_gradient2(low = "#fbece3", 
+    high = "#d85edd", 
+    breaks = pretty_breaks(n = 5)) + scale_fill_viridis(option="A") + xlab("countries") +  ylab("age") + ggtitle("Plot 4. Mean staisfaction with life among differnet countries
+                                                                                                                 \nand ages (below average)") 
+
+```
+
+In average people are the most satisfied before 25 or after 70. In Nordic countries people who are over 70 are significantly more satisfied in comparison to other countries. An interesting finding is that people in Nordic countries tent to be more satisfied after 70 years rather then before 25. In countries such as Bulgaria, Portugal, Serbia people are happier at before they reach 25 and not significantly satisfied over 70. This difference is a pattern and is most likely related to economic conditions and social support in those countries. Developed and rich countries, such as Denmark, Norway, Austria have significantly higher level of overall satisfaction of people at any ages. 
+
+For more comfortable view, I separated the main raster plot in a way that the third would show data for people whose satisfaction with life above average (mean = 7.160721). The plot seems to be the most dense in the lover part indicating that people below 25 tent to be the most satisfied.  
+We can see that Austria, Denmark, Switzerland, Finland, Island, Norway, Sweden and Netherlands have the most light or the most filled lines that means that the lest number of people feeling above average satisfaction.  
+Denmark, Switzerland and Island have notably higher average satisfaction.  
+
+The forth plot shows people dense satisfaction with life is below average. Bulgaria, Hungary, Portugal, France, Slovakia and Serbia have the majority of people whose satisfaction with life is below average. 
+
+
+
+
+
+
+
+
+
+

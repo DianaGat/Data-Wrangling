@@ -1,0 +1,5 @@
+"0","# histograms by groups for img_avg"
+"0","ggplot(data7, aes(x = img_avg)) +"
+"0","  geom_histogram() + facet_grid(cntry ~ .)"
+"2","`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+"

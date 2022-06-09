@@ -1,0 +1,7 @@
+"0","part2_data$q2 <- ordered(part2_data$q2,
+                         levels = c(1, 2, 3, 4, 5, -1),
+                         levels = c(""Agree strongly"", ""Agree"", ""Neither agree nor disagree"", ""Disagree"", ""Disagree strongly"", ""missing""))
+"
+"2","Error in factor(x, ..., ordered = TRUE) : 
+  formal argument ""levels"" matched by multiple actual arguments
+"

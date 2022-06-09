@@ -1,0 +1,4 @@
+"0",""
+"0","# original versions:"
+"0","missing_img$img_sum <- rowSums(select(missing_img, imwbcnt, imbgeco, imueclt), na.rm = TRUE)"
+"0","missing_img$img_avg <- rowMeans(select(missing_img, imwbcnt, imbgeco, imueclt), na.rm = TRUE)"

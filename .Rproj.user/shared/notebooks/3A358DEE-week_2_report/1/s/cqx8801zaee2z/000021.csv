@@ -1,0 +1,17 @@
+"0","library(expss)
+"
+"2","Loading required package: maditr
+"
+"2","
+To drop variable use NULL: let(mtcars, am = NULL) %>% head()
+
+"
+"2","
+Attaching package: ‘expss’
+
+"
+"2","The following object is masked from ‘package:sjlabelled’:
+
+    read_spss
+
+"

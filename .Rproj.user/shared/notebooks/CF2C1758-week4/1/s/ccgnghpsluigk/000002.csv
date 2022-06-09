@@ -1,0 +1,2 @@
+"0","data$sum <- rowSums(data[,109:111], na.rm = T)"
+"0","head(data[,109:111], n = 25)"

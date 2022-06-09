@@ -1,0 +1,6 @@
+"0","library(gplots)"
+"0","library(ggplot2)"
+"0","library(tidyverse)"
+"0",""
+"0","balloonplot(t(t1), main =""gender and attitude to immigrants, t1"", mtext(""attitude to immigrants, 1 = allow many, 4 = allow none"", side = 1), mtext (""gender, 1 = male, 2 = female"", side = 2),"
+"0","            label = T, show.margins = T)"

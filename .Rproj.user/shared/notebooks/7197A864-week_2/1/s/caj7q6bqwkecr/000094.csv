@@ -1,0 +1,25 @@
+"0","#load necessary libraries"
+"0","library(ggplot2)"
+"0","library(GGally)"
+"0","library(haven)"
+"0","library(tidyverse)"
+"0","library(corrplot)"
+"0","library(tidyverse)"
+"0","library(dplyr)"
+"0",""
+"0","#make one dataframe that contains all the cat variables. Dont do the same for age and gender since there is just one variable that is continuous or binary."
+"0","interested_var_cat <- select(data, ""stflife"", ""polintr"", ""actrolga"", ""imwbcnt"", ""imbgeco"", ""imueclt"", ""imsmetn"", ""imdfetn"", ""impcntr"")"
+"0","# ""gndr"""
+"0","# agea"
+"0",""
+"0","gather(interested_var_cat) %>% ggplot(aes(x = value)) + geom_bar(aes(y = value), col = ""black"", fill = ""pink"", alpha = 0.8, bins = 10)"
+"2","Warning:"
+"2"," attributes are not identical across measure variables;
+they will be dropped
+"
+"2","Warning:"
+"2"," Ignoring unknown parameters: bins
+"
+"2","Error: stat_count() can only have an x or y aesthetic.
+[90mRun `rlang::last_error()` to see where the error occurred.[39m
+"
